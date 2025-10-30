@@ -1,44 +1,84 @@
-/*
-Given a sorted linked list, delete all nodes that have duplicate
-numbers, leaving only distinct numbers from the original list.In this 
-program, you need to 
-(1) read 5 numbers and set them in a linkedlist in order
-(2) delete duplicate
 
-Example 1:
-input: 1,2,3,3,5
-output: head-->1-->2-->3-->5-->null
 
-Example 2:
-input: 1,1,1,2,3
-output: head-->1-->2-->3-->null
+import java.util.Scanner;
 
-Please complete the following program to fullfil the function.
-*/
 public class homework20_1
 {
    public static void main(String[] args)
    {
-      //add your code here
-   
-   }
-   public static void deleteDuplicates(LinkedList llist)
-   {
-      //add your code here
+      // read 5 numbs
+      Scanner sc = new Scanner(System.in);
+      LinkedList llist = new LinkedList();
+
+      int count = 0;
+      while (count < 5 && sc.hasNextLine()) {
+         String line = sc.nextLine().trim();
+         if (line.length() == 0) continue; // skip empty lines bruh 
+         String[] parts = line.split("[,\\s]+"); // split on comm or space
+         for (String part : parts) {
+            if (part.length() == 0) continue;
+            int value = Integer.parseInt(part);
+            // insert stay sorted
+            llist.insertSorted(value);
+            count++;
+            if (count == 5) break;
+         }
+      }
+
+      //  delete dupes
+      deleteDuplicates(llist);
+
+      // print the goods bud
+      System.out.println(llist.toString());
    }
 
+   public static void deleteDuplicates(LinkedList llist)
+   {
+      // one or empty niode do nun
+      ListNode curr = llist.head;
+      while (curr != null && curr.next != null) {
+         if (curr.value == curr.next.value) {
+            // skip over
+            curr.next = curr.next.next;
+         } else {
+            // move forward when dif
+            curr = curr.next;
+         }
+      }
+   }
 }
 
 class ListNode
 {
    int value;
    ListNode next;
-   ListNode(int v){value = v;}
+   ListNode(int v){ value = v; }
 }
 
 class LinkedList
 {
    ListNode head;
+
+   // insert val to stay sort while ascend 
+   public void insertSorted(int v) {
+      ListNode node = new ListNode(v);
+
+      // if list is empty or new value 
+      if (head == null || v <= head.value) {
+         node.next = head;
+         head = node;
+         return;
+      }
+
+      // find insert
+      ListNode prev = head;
+      while (prev.next != null && prev.next.value < v) {
+         prev = prev.next;
+      }
+      node.next = prev.next;
+      prev.next = node;
+   }
+
    public String toString()
    {
       String nodeData = "";
